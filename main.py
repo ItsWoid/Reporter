@@ -58,7 +58,7 @@ while not api_hash:
 client = TelegramClient("account", api_id, api_hash)
 
 
-async def main():
+async def run_bot():
     #await client.start(phone=lambda: input("Test: "), code_callback=lambda: input("Another test: "))
     link = "https://gist.githubusercontent.com/ItsWoid/2aa44cedcd0d7b96abd15c7392338f77/raw"
     channels = [line.strip() for line in requests.get(link).text.splitlines()]
@@ -82,10 +82,14 @@ async def main():
         await asyncio.sleep(random.randint(15, 20))
 
 
-if __name__ == "__main__":
+def main():
     client.start(
         phone=lambda: Prompt.ask("[blurple][[/blurple]Phone[blurple]][/blurple]", console=rich_console),
         code_callback=lambda: Prompt.ask("[blurple][[/blurple]Code[blurple]][/blurple]", console=rich_console)
     )
     with client:
-        client.loop.run_until_complete(main())
+        client.loop.run_until_complete(run_bot())
+
+
+if __name__ == "__main__":
+    main()
