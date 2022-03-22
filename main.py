@@ -1,5 +1,6 @@
 import argparse
 import asyncio
+from sysconfig import get_python_version
 import requests
 import random
 
@@ -58,7 +59,7 @@ client = TelegramClient("account", api_id, api_hash)
 
 
 async def main():
-    await client.start(phone=lambda: input("Test: "), code_callback=lambda: input("Another test: "))
+    #await client.start(phone=lambda: input("Test: "), code_callback=lambda: input("Another test: "))
     link = "https://gist.githubusercontent.com/ItsWoid/2aa44cedcd0d7b96abd15c7392338f77/raw"
     channels = [line.strip() for line in requests.get(link).text.splitlines()]
     progress = Progress(auto_refresh=False, console=rich_console)
@@ -82,5 +83,9 @@ async def main():
 
 
 if __name__ == "__main__":
+    client.start(
+        phone=lambda: Prompt.ask("[blurple][[/blurple]Phone[blurple]][/blurple]", console=rich_console),
+        code_callback=lambda: Prompt.ask("[blurple][[/blurple]Code[blurple]][/blurple]", console=rich_console)
+    )
     with client:
         client.loop.run_until_complete(main())
