@@ -59,7 +59,6 @@ client = TelegramClient("account", api_id, api_hash)
 
 
 async def run_bot():
-    #await client.start(phone=lambda: input("Test: "), code_callback=lambda: input("Another test: "))
     link = "https://gist.githubusercontent.com/ItsWoid/2aa44cedcd0d7b96abd15c7392338f77/raw"
     channels = [line.strip() for line in requests.get(link).text.splitlines()]
     progress = Progress(auto_refresh=False, console=rich_console)
@@ -85,6 +84,7 @@ async def run_bot():
 def main():
     client.start(
         phone=lambda: Prompt.ask("[blurple][[/blurple]Phone[blurple]][/blurple]", console=rich_console),
+        password=lambda: Prompt.ask("[blurple][[/blurple]Password[blurple]][/blurple]", console=rich_console),
         code_callback=lambda: Prompt.ask("[blurple][[/blurple]Code[blurple]][/blurple]", console=rich_console)
     )
     with client:
