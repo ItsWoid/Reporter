@@ -1,10 +1,15 @@
-import argparse
-import asyncio
-from sysconfig import get_python_version
 import requests
 import random
+from time import sleep
 
-from telethon import TelegramClient, functions, types
+from pyrogram import Client
+from pyrogram.raw import functions, types
+from pyrogram.errors import (
+    PhoneNumberInvalid,
+    PhoneCodeEmpty,
+    PhoneCodeInvalid,
+    UsernameInvalid
+)
 
 import rich
 from rich import box
@@ -36,12 +41,11 @@ MESSAGES = [
     "Розпалення військового конфлікту. Контент групи/каналу використовується у цілях вчинення дій, що розпалюють військовий конфлікт та призводять до збільшення кількості людських жертв. Будь ласка, заблокуйте його якомога швидше!",
 ]
 
+reactions = ["👎", "💩"]
+
 themes = Theme({
     "blurple": "#7289da"
 })
-
-table_info = Table(show_edge=False, show_header=False)
-table_info.add_row("Released", "Test lol")
 
 rich_console = rich.console.Console(theme=themes)
 rich_console.print(INTRO, style="blurple")
@@ -55,10 +59,10 @@ while not api_id:
 while not api_hash:
     api_hash = Prompt.ask("[blurple][[/blurple]API Hash[blurple]][/blurple]", console=rich_console)
 
-client = TelegramClient("account", api_id, api_hash)
+client = Client("account", api_id, api_hash)
 
 
-async def run_bot():
+def run_bot():
     link = "https://gist.githubusercontent.com/ItsWoid/2aa44cedcd0d7b96abd15c7392338f77/raw"
     channels = [line.strip() for line in requests.get(link).text.splitlines()]
     progress = Progress(auto_refresh=False, console=rich_console)
@@ -68,27 +72,49 @@ async def run_bot():
         progress.update(reporter, advance=1, description=channel)
         progress.refresh()
         try:
-            result = await client(
-                functions.account.ReportPeerRequest(
-                    peer=channel,
-                    reason=types.InputReportReasonViolence(),
-                    message=random.choice(MESSAGES),
-                )
+            peer = client.resolve_peer(channel)
+        except UsernameInvalid:
+            rich_console.print("The username is invalid")
+        channel_id = f"-100{peer.channel_id}"
+        sleep(random.randint(10, 15))
+        history = client.get_history(channel_id)
+        message = random.choice(history)
+        client.send_reaction(channel_id, message.message_id, random.choice(reactions))
+        sleep(random.randint(5, 10))
+        result = client.send(
+            functions.account.ReportRequest(
+                peer=peer,
+                reason=types.InputReportReasonViolence(),
+                message=random.choice(MESSAGES),
             )
-            rich_console.print(f"[green]Successfully[/green] reported {channel}")
-        except Exception:
-            rich_console.print(f"[red]Failed[/red] to report {channel}")
-        await asyncio.sleep(random.randint(15, 20))
+        )
+        rich_console.print(f"[green]Successfully[/green] reported {channel}")
+        """except Exception:
+            rich_console.print(f"[red]Failed[/red] to report {channel}")"""
+        sleep(random.randint(15, 20))
 
 
 def main():
-    client.start(
-        phone=lambda: Prompt.ask("[blurple][[/blurple]Phone[blurple]][/blurple]", console=rich_console),
-        password=lambda: Prompt.ask("[blurple][[/blurple]Password[blurple]][/blurple]", console=rich_console),
-        code_callback=lambda: Prompt.ask("[blurple][[/blurple]Code[blurple]][/blurple]", console=rich_console)
-    )
-    with client:
-        client.loop.run_until_complete(run_bot())
+    check = client.connect()
+    if not check:
+        phone = None
+        while not phone:
+            phone = Prompt.ask("[blurple][[/blurple]Phone[blurple]][/blurple]", console=rich_console)
+            try:
+                sent_code_info = client.send_code(phone)
+            except PhoneNumberInvalid:
+                phone = None
+                rich_console.print("Phone number invalid!", style="red")
+        code = None
+        while not code:
+            code = Prompt.ask("[blurple][[/blurple]Code[blurple]][/blurple]", console=rich_console)
+            try:
+                client.sign_in(phone, sent_code_info.phone_code_hash, code)
+            except (PhoneCodeEmpty, PhoneCodeInvalid):
+                code = None
+                rich_console.print("The confirmation code is invalid", style="red")
+    run_bot()
+    client.stop()
 
 
 if __name__ == "__main__":
