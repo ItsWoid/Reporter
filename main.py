@@ -8,7 +8,9 @@ from pyrogram.errors import (
     PhoneNumberInvalid,
     PhoneCodeEmpty,
     PhoneCodeInvalid,
-    UsernameInvalid
+    SessionPasswordNeeded,
+    PasswordHashInvalid,
+    UsernameInvalid,
 )
 
 import rich
@@ -17,7 +19,7 @@ from rich.table import Table
 from rich.theme import Theme
 from rich.columns import Columns
 from rich.panel import Panel
-from rich.prompt import IntPrompt, Prompt
+from rich.prompt import Confirm, IntPrompt, Prompt
 from rich.progress import TextColumn, BarColumn, Progress
 
 INTRO = """
@@ -82,21 +84,19 @@ def run_bot():
         client.send_reaction(channel_id, message.message_id, random.choice(reactions))
         sleep(random.randint(5, 10))
         result = client.send(
-            functions.account.ReportRequest(
+            functions.account.ReportPeer(
                 peer=peer,
                 reason=types.InputReportReasonViolence(),
                 message=random.choice(MESSAGES),
             )
         )
         rich_console.print(f"[green]Successfully[/green] reported {channel}")
-        """except Exception:
-            rich_console.print(f"[red]Failed[/red] to report {channel}")"""
         sleep(random.randint(15, 20))
 
 
 def main():
-    check = client.connect()
-    if not check:
+    is_authorized = client.connect()
+    if not is_authorized:
         phone = None
         while not phone:
             phone = Prompt.ask("[blurple][[/blurple]Phone[blurple]][/blurple]", console=rich_console)
@@ -113,8 +113,55 @@ def main():
             except (PhoneCodeEmpty, PhoneCodeInvalid):
                 code = None
                 rich_console.print("The confirmation code is invalid", style="red")
+            except SessionPasswordNeeded:
+                rich_console.print(
+                    "\nYour account have two-step verification enabled!\n"
+                    "To continue you need to input your password.\n"
+                    f"Password hint: [yellow]{client.get_password_hint()}[/yellow]"
+                )
+
+                password = None
+                for tries in range(3):
+                    password = Prompt.ask("[blurple][[/blurple]Password[blurple]][/blurple]", console=rich_console)
+                    try:
+                        client.check_password(password)
+                    except PasswordHashInvalid:
+                        password = None
+                        rich_console.print("Invalid password! Try again.", style="red")
+                    else:
+                        break
+
+                if not password:
+                    rich_console.print(
+                        "\nSeems like you forgot your password.\n"
+                        "Don't worry tho! It can be recovered!"
+                    )
+                    confirm = Confirm.ask("Confirm password recovery")
+
+                    if confirm:
+                        email_pattern = client.send_recovery_code()
+                        rich_console.print(f"Recovery code has been sent to {email_pattern}")
+
+                        while True:
+                            recovery_code = Prompt.ask("[blurple][[/blurple]Recovery code[blurple]][/blurple]", console=rich_console)
+
+                            try:
+                                client.recover_password(recovery_code)
+                            except Exception as e:
+                                rich_console.print(e)
+                    else:
+                        password = None
+                        return input(
+                            "Connection failed!\n"
+                            "Press any key to exit..."
+                        )
+    #client.start()
     run_bot()
-    client.stop()
+    client.disconnect()
+    input(
+        "Programm is finished!",
+        "Press any key to exit..."
+    )
 
 
 if __name__ == "__main__":
