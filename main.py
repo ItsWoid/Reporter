@@ -8,6 +8,7 @@ from pyrogram.errors import (
     PhoneNumberInvalid,
     PhoneCodeEmpty,
     PhoneCodeInvalid,
+    ReactionInvalid,
     SessionPasswordNeeded,
     PasswordHashInvalid,
     UsernameInvalid,
@@ -38,8 +39,8 @@ MESSAGES = [
     "Propaganda of the war in Ukraine. Propaganda of murders of Ukrainians and Ukrainian soldiers. Block it!",
     "Dissemination of military personal data. Block the channel!",
     "Publication of military deaths, brutal killings, violence and hostilities. Please block the channel!",
-    "Пропаганда. Розповсюдження некоректної інформації (пропаганда), що призводить до розпалення міжнаціонального конфлікту. Заблокуйте його якомога швидше!",
-    "Міжнаціональний конфлікт. Розповсюдження некоректної інформації, яка вводить в оману користувачів та посилює міжнаціональний конфлікт. Заблокуйте його",
+    "Propaganda. Dissemination of incorrect information, which leads to the escalation of interethnic conflict. Block it as soon as possible!",
+    "Interethnic conflict. Dissemination of incorrect information that misleads users and exacerbates interethnic conflict. Block it!",
     "Розпалення військового конфлікту. Контент групи/каналу використовується у цілях вчинення дій, що розпалюють військовий конфлікт та призводять до збільшення кількості людських жертв. Будь ласка, заблокуйте його якомога швидше!",
 ]
 
@@ -76,22 +77,26 @@ def run_bot():
         try:
             peer = client.resolve_peer(channel)
         except UsernameInvalid:
-            rich_console.print("The username is invalid")
-        channel_id = f"-100{peer.channel_id}"
-        sleep(random.randint(10, 15))
-        history = client.get_history(channel_id)
-        message = random.choice(history)
-        client.send_reaction(channel_id, message.message_id, random.choice(reactions))
-        sleep(random.randint(5, 10))
-        result = client.send(
-            functions.account.ReportPeer(
-                peer=peer,
-                reason=types.InputReportReasonViolence(),
-                message=random.choice(MESSAGES),
+            rich_console.print(f"[red]Failed[/red] to resolve {channel}")
+        else:
+            channel_id = f"-100{peer.channel_id}"
+            sleep(random.randint(15, 20))
+            history = client.get_history(channel_id)
+            message = random.choice(history)
+            try:
+                client.send_reaction(channel_id, message.message_id, random.choice(reactions))
+            except ReactionInvalid:
+                sleep(20, 30)
+            sleep(random.randint(15, 20))
+            result = client.send(
+                functions.account.ReportPeer(
+                    peer=peer,
+                    reason=types.InputReportReasonViolence(),
+                    message=random.choice(MESSAGES),
+                )
             )
-        )
-        rich_console.print(f"[green]Successfully[/green] reported {channel}")
-        sleep(random.randint(15, 20))
+            rich_console.print(f"[green]Successfully[/green] reported {channel}")
+            sleep(random.randint(30, 60))
 
 
 def main():
@@ -153,14 +158,13 @@ def main():
                         password = None
                         return input(
                             "Connection failed!\n"
-                            "Press any key to exit..."
+                            "Press enter to exit..."
                         )
-    #client.start()
     run_bot()
     client.disconnect()
     input(
         "Programm is finished!",
-        "Press any key to exit..."
+        "Press enter to exit..."
     )
 
 
