@@ -72,7 +72,7 @@ def run_bot():
     reporter = progress.add_task("Reporting...", total=len(channels))
     progress.start()
     for channel in channels:
-        progress.update(reporter, advance=1, description=channel)
+        progress.update(reporter, description=f"Resolving {channel}...")
         progress.refresh()
         try:
             peer = client.resolve_peer(channel)
@@ -81,11 +81,17 @@ def run_bot():
         else:
             channel_id = f"-100{peer.channel_id}"
             sleep(random.randint(15, 20))
+            progress.update(reporter, description=f"Getting messages...")
+            progress.refresh()
             history = client.get_history(channel_id)
             message = random.choice(history)
             try:
+                progress.update(reporter, description="Reacting to the random message...")
+                progress.refresh()
                 client.send_reaction(channel_id, message.message_id, random.choice(reactions))
             except ReactionInvalid:
+                progress.update(reporter, description="Failed to add reaction. Waiting...")
+                progress.refresh()
                 sleep(20, 30)
             sleep(random.randint(15, 20))
             result = client.send(
@@ -95,7 +101,12 @@ def run_bot():
                     message=random.choice(MESSAGES),
                 )
             )
-            rich_console.print(f"[green]Successfully[/green] reported {channel}")
+            progress.update(
+                reporter,
+                advance=1,
+                description=f"[green]Successfully[/green] reported [yellow]{channel}[/yellow]. Waiting...",
+            )
+            progress.refresh()
             sleep(random.randint(30, 60))
 
 
