@@ -1,8 +1,8 @@
 ## Install
 
-1. [Download](https://github.com/ItsWoid/Voider/releases/tag/0.0.1) main.exe file
-2. Put it in the folder and launch it
-3. Open the link [https://my.telegram.org](https://my.telegram.org/), and log in using your mobile phone number.
-Click **API development tools** enter **App title** and **Short name** **(App title and Short name can be whatever)**
-<br>Then you get api_id and api_hash, which you can use in the program
-4. The program will then ask you to enter api_id and api_hash, after which you will need to enter your phone number (in format +380XXXXXXXX) to which the telegram is used, and the code you will receive
+1. Встановіть файл main.py
+2. Встановіть необхідні бібліотеки з файлу requirements.txt (pip install -r requirements.txt)
+3. Перейдіть за посиланням [https://my.telegram.org](https://my.telegram.org/), та зайдіть використовуючи ваш номер телефону.
+Натичніть **API development tools** та введіть **App title** і **Short name** **(App title та Short можуть бути які завгодно)**
+<br>Далі ви дістанете api_id та api_hash, які зможете використати у програмі
+4. Програма попросить вас ввести api_id та api_hash, після чого вам потрібно буде ввести ваш номер телефону (у форматі +380XXXXXXXX) який прив'язаний до телеграму, і код який прийде
