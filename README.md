@@ -1,4 +1,4 @@
-## Install
+## Встановлення
 
 1. Встановіть файл main.py
 2. Встановіть необхідні бібліотеки з файлу requirements.txt (pip install -r requirements.txt)
