@@ -1,3 +1,4 @@
+import argparse
 import requests
 import random
 from time import sleep
@@ -45,24 +46,6 @@ MESSAGES = [
 ]
 
 reactions = ["👎", "💩"]
-
-themes = Theme({
-    "blurple": "#7289da"
-})
-
-rich_console = rich.console.Console(theme=themes)
-rich_console.print(INTRO, style="blurple")
-
-api_id = None
-api_hash = None
-
-while not api_id:
-    api_id = IntPrompt.ask("[blurple][[/blurple]API ID[blurple]][/blurple]", console=rich_console)
-
-while not api_hash:
-    api_hash = Prompt.ask("[blurple][[/blurple]API Hash[blurple]][/blurple]", console=rich_console)
-
-client = Client("account", api_id, api_hash)
 
 
 def run_bot():
@@ -179,5 +162,41 @@ def main():
     )
 
 
+def init_argparse():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--api-id",
+        type=int,
+        default=None,
+        help="Telegram API ID",
+    )
+    parser.add_argument(
+        "--api-hash",
+        default=None,
+        help="Telegram API Hash",
+    )
+    return parser
+
+
 if __name__ == "__main__":
+    args = init_argparse().parse_args()
+
+    api_id = args.api_id
+    api_hash = args.api_hash
+
+    themes = Theme({
+        "blurple": "#7289da"
+    })
+
+    rich_console = rich.console.Console(theme=themes, force_terminal=True)
+    rich_console.print(INTRO, style="blurple")
+
+    while not api_id:
+        api_id = IntPrompt.ask("[blurple][[/blurple]API ID[blurple]][/blurple]", console=rich_console)
+
+    while not api_hash:
+        api_hash = Prompt.ask("[blurple][[/blurple]API Hash[blurple]][/blurple]", console=rich_console)
+
+    client = Client("account", api_id, api_hash)
+
     main()
