@@ -3,7 +3,7 @@
 ### Docker
 
 ```console
-docker run -it --rm --pull always ghcr.io/itswoid/reporter:1.0.0
+docker run -i -it --rm --pull always ghcr.io/itswoid/reporter:1.0.0
 ```
 
 ### Python
