@@ -75,7 +75,7 @@ def run_bot():
             except ReactionInvalid:
                 progress.update(reporter, description="Failed to add reaction. Waiting...")
                 progress.refresh()
-                sleep(20, 30)
+                sleep(random.randint(20, 30))
             sleep(random.randint(15, 20))
             result = client.send(
                 functions.account.ReportPeer(

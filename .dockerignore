@@ -1,4 +1,5 @@
-.session
+*.session
 __pycache__
 .github
 .gitignore
+*.md
