@@ -154,6 +154,15 @@ def main():
                             "Connection failed!\n"
                             "Press enter to exit..."
                         )
+    user = client.get_me()
+    table_info = Table(show_edge=False, show_header=False, box=box.MINIMAL)
+    table_info.add_row(f"Connected: [blurple]{user.username}[/blurple]")
+    rich_console.print(
+        Columns(
+            [Panel(table_info, border_style="blurple")],
+            align="center",
+        )
+    )
     run_bot()
     client.disconnect()
     input(
