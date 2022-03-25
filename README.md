@@ -14,6 +14,8 @@ docker run -i -it --rm --pull always ghcr.io/itswoid/reporter:1.0.0 --api-id API
 ```
 
 Аргументи:
+Аргумент | Опис
+--- | ---
 --api-id | API ID
 --- | ---
 --api-hash | API Hash
