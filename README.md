@@ -2,9 +2,21 @@
 
 ### Docker
 
+Команда для запуску програми через docker:
 ```console
 docker run -i -it --rm --pull always ghcr.io/itswoid/reporter:1.0.0
 ```
+
+Також можна передати параметри через аргументи.
+Приклад:
+```console
+docker run -i -it --rm --pull always ghcr.io/itswoid/reporter:1.0.0 --api-id API_ID --api-hash API_HASH
+```
+
+Аргументи:
+--api-id | API ID
+--- | ---
+--api-hash | API Hash
 
 ### Python
 
