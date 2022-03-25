@@ -164,7 +164,7 @@ def main():
         )
     )
     run_bot()
-    client.disconnect()
+    client.log_out()
     input(
         "Programm is finished!",
         "Press enter to exit..."
