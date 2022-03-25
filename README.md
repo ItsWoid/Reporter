@@ -1,5 +1,13 @@
 ## Встановлення
 
+### Docker
+
+```console
+docker run -it --rm --pull always ghcr.io/itswoid/reporter:1.0.0
+```
+
+### Python
+
 1. Встановіть файл main.py
 2. Встановіть необхідні бібліотеки з файлу requirements.txt (pip install -r requirements.txt)
 3. Перейдіть за посиланням [https://my.telegram.org](https://my.telegram.org/), та зайдіть використовуючи ваш номер телефону.
