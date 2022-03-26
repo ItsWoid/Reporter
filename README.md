@@ -9,6 +9,12 @@
 - Кидаємо репорт
 - Чекаємо 30 - 60 секунд
 
+## Підготовка
+Перед тим як встановлювати та запускати програму вам потрібні `api_id` та `api_hash`.
+Для цього перейдіть за посиланням [https://my.telegram.org](https://my.telegram.org/), та зайдіть використовуючи ваш номер.
+Натичніть **API development tools** та введіть **App title** і **Short name** **(App title та Short можуть бути які завгодно)**
+<br>Далі ви дістанете api_id та api_hash, які зможете використати у програмі
+
 ## Встановлення
 
 ### Docker
@@ -32,9 +38,13 @@ docker run -i -it --rm --pull always ghcr.io/itswoid/reporter:1.0.0 --api-id API
 
 ### Python
 
-1. Встановіть файл main.py
-2. Встановіть необхідні бібліотеки з файлу requirements.txt (pip install -r requirements.txt)
-3. Перейдіть за посиланням [https://my.telegram.org](https://my.telegram.org/), та зайдіть використовуючи ваш номер телефону.
-Натичніть **API development tools** та введіть **App title** і **Short name** **(App title та Short можуть бути які завгодно)**
-<br>Далі ви дістанете api_id та api_hash, які зможете використати у програмі
+1. Встановіть файли `main.py` та `requirements.txt`
+2. Встановіть необхідні бібліотеки з файлу `requirements.txt`
+```console
+pip install -r requirements.txt
+```
+3. Запустіть програму
+```console
+python main.py
+```
 4. Програма попросить вас ввести api_id та api_hash, після чого вам потрібно буде ввести ваш номер телефону (у форматі +380XXXXXXXX) який прив'язаний до телеграму, і код який прийде
