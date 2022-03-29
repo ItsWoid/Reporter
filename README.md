@@ -30,12 +30,6 @@ docker run -i -it --rm --pull always ghcr.io/itswoid/reporter:1.0.0
 docker run -i -it --rm --pull always ghcr.io/itswoid/reporter:1.0.0 --api-id API_ID --api-hash API_HASH
 ```
 
-Аргументи:
-Аргумент | Опис
---- | ---
---api-id | API ID
---api-hash | API Hash
-
 ### Python
 
 1. Встановіть файли `main.py` та `requirements.txt`
@@ -48,3 +42,10 @@ pip install -r requirements.txt
 python main.py
 ```
 4. Програма попросить вас ввести api_id та api_hash, після чого вам потрібно буде ввести ваш номер телефону (у форматі +380XXXXXXXX) який прив'язаний до телеграму, і код який прийде
+
+## Аргументи
+
+Аргумент | Опис
+--- | ---
+--api-id | API ID
+--api-hash | API Hash
