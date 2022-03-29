@@ -24,7 +24,7 @@
 docker run -i -it --rm --pull always ghcr.io/itswoid/reporter:1.0.0
 ```
 
-Також можна передати параметри через аргументи.
+Також можна передати параметри через [аргументи](https://github.com/ItsWoid/Reporter#%D0%B0%D1%80%D0%B3%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D0%B8).
 Приклад:
 ```console
 docker run -i -it --rm --pull always ghcr.io/itswoid/reporter:1.0.0 --api-id API_ID --api-hash API_HASH
